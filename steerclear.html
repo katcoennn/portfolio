@@ -1,12 +1,1635 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>SteerClear</title>
-</head>
-<body>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Righteous|Syncopate" rel="stylesheet">
+        <title>Steer Clear</title>
+        <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <style>
+    label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+    div#users-contain { width: 350px; margin: 20px 0; }
+    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+  </style>
+  <style>
+    .tab-bar {
+  font-family: 'Syncopate', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /*-moz-osx-font-smoothing: grayscale;*/
+  font-weight: 400;
+  font-size: 17px;
+  display: table;
+  table-layout: fixed;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+  height: 49px;
+  background-color: #1A1A1A;
+  border-top: 1px solid #1A1A1A;
+  width: 100%;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .tab-bar {
+    border-top: none;
+    /*-webkit-background-size: 100% 1px;*/
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-image: -webkit-linear-gradient(270deg, #1A1A1A, #1A1A1A 50%, transparent 50%);
+    /*background-image: -moz-linear-gradient(270deg, #ccc, #ccc 50%, transparent 50%);*/
+    /*background-image: -o-linear-gradient(270deg, #ccc, #ccc 50%, transparent 50%);*/
+    background-image: linear-gradient(180deg, #1A1A1A, #1A1A1A 50%, transparent 50%);
+  }
+}
+.tab-bar__item {
+ font-family: 'Syncopate', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /*-moz-osx-font-smoothing: grayscale;*/
+  font-weight: 400;
+  font-size: 17px;
+  position: relative;
+  overflow: hidden;
+  display: table-cell;
+  width: auto;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+}
+.tab-bar__item > input {
+  position: absolute;
+  overflow: hidden;
+  right: 0px;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  padding: 0;
+  border: 0;
+  opacity: 0.001;
+  z-index: 1;
+  vertical-align: top;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  -webkit-appearance: none;
+  /*appearance: none;*/
+}
+.tab-bar__button {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+font-family: 'Syncopate', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /*-moz-osx-font-smoothing: grayscale;*/
+  font-weight: 400;
+  font-size: 17px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  line-height: normal;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /*user-select: none;*/
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-decoration: none;
+  padding: 0;
+  height: 49px;
+  letter-spacing: 0;
+  color: #999;
+  text-shadow: 0 1px none;
+  vertical-align: top;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-top: none;
+  width: 100%;
+  font-weight: 400;
+  line-height: 49px;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .tab-bar__button {
+    border-top: none;
+  }
+}
+.tab-bar__icon {
+  font-size: 24px;
+  padding: 0;
+  margin: 0;
+  line-height: 26px;
+  display: block;
+  height: 28px;
+}
+.tab-bar__label {
+  font-family: 'Syncopate', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /*-moz-osx-font-smoothing: grayscale;*/
+  font-weight: 400;
+  font-size: 17px;
+}
+.tab-bar__badge.notification {
+  position: absolute;
+  top: 5px;
+  z-index: 10;
+  font-size: 12px;
+  height: 16px;
+  line-height: 16px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+}
+.tab-bar__icon + .tab-bar__label {
+  font-size: 10px;
+  line-height: 1;
+  margin: 0;
+  font-weight: 400;
+}
+.tab-bar__label:first-child {
+  font-size: 16px;
+  line-height: 49px;
+  margin: 0;
+  padding: 0;
+}
+.tab-bar__button {
+  color: #999;
+}
+:checked + .tab-bar__button {
+  color: rgba(24,103,194,0.81);
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-top: none;
+}
+.tab-bar__button:disabled {
+  opacity: 0.3;
+  cursor: default;
+  /*pointer-events: none;*/
+}
+.tab-bar__button:focus {
+  z-index: 1;
+  border-top: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  outline: 0;
+}
+.tab-bar__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 49px;
+  z-index: 0;
+}
+.tab-bar--top {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: auto;
+  border-top: none;
+  border-bottom: 1px solid #ccc;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .tab-bar--top {
+    border-bottom: none;
+    /*-webkit-background-size: 100% 1px;*/
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-image: -webkit-linear-gradient(90deg, #ccc, #ccc 50%, transparent 50%);
+    /*background-image: -moz-linear-gradient(90deg, #ccc, #ccc 50%, transparent 50%);*/
+    /*background-image: -o-linear-gradient(90deg, #ccc, #ccc 50%, transparent 50%);*/
+    background-image: linear-gradient(0deg, #ccc, #ccc 50%, transparent 50%);
+  }
+}
+.tab-bar--top__content {
+  top: 49px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+.tab-bar--top-border__button {
+  background-color: transparent;
+  border-bottom: 4px solid transparent;
+}
+:checked + .tab-bar--top-border__button {
+  background-color: transparent;
+  border-bottom: 4px solid rgba(24,103,194,0.81);
+}
+.tab-bar--material {
+  background-color: #1A1A1A;
+  border-bottom-width: 0px;
+  -webkit-box-shadow: 0 4px 2px -2px rgba(0,0,0,0.14), 0 3px 5px -2px rgba(0,0,0,0.12), 0 5px 1px -4px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 2px -2px rgba(0,0,0,0.14), 0 3px 5px -2px rgba(0,0,0,0.12), 0 5px 1px -4px rgba(0,0,0,0.2);
+}
+.tab-bar--material__button {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Syncopate', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.tab-bar--material__button:after {
+  content: '';
+  display: block;
+  width: 0px;
+  height: 2px;
+  bottom: 0px;
+  position: absolute;
+  margin-top: -2px;
+  background-color: #ffffff;
+}
+:checked + .tab-bar--material__button:after {
+  width: 100%;
+  -webkit-transition: width 0.2s ease-in-out;
+  -moz-transition: width 0.2s ease-in-out;
+  /*-o-transition: width 0.2s ease-in-out;*/
+  transition: width 0.2s ease-in-out;
+}
+:checked + .tab-bar--material__button {
+  background-color: transparent;
+  color: #ffffff;
+}
+.tab-bar--material__item:not([ripple]):active {
+  background-color: #545454;
+}
 
-<h1>SteerClear</h1>
-<p>where we put the code if it ever gets finished!!!!!!!!!!!!!!!!!!!!!!!!!!!</p>
 
-</body>
+.button {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  line-height: normal;
+font-family: 'Syncopate', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /*-moz-osx-font-smoothing: grayscale;*/
+  font-weight: 400;
+  font-size: 50px;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /*user-select: none;*/
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  height: auto;
+  text-decoration: none;
+  padding: 4px 10px;
+  font-size: 17px;
+  line-height: 32px;
+  letter-spacing: 0;
+  color: #696969;
+  vertical-align: middle;
+  background-color: #F0EFED;
+  border: 0px solid currentColor;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-transition: none;
+  -moz-transition: none;
+  /*-o-transition: none;*/
+  transition: none;
+}
+.button:hover {
+  -webkit-transition: none;
+  -moz-transition: none;
+  /*-o-transition: none;*/
+  transition: none;
+}
+.button:active {
+  background-color:#F0EFED;
+  -webkit-transition: none;
+  -moz-transition: none;
+  /*-o-transition: none;*/
+  transition: none;
+  opacity: 0.2;
+}
+.button:focus {
+  outline: 0;
+}
+.button:disabled,
+.button[disabled] {
+  opacity: 0.3;
+  cursor: default;
+  /*pointer-events: none;*/
+}
+.button--large {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 36px;
+  padding: 4px 12px;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.button--large:active {
+  background-color: #F0EFED;
+  -webkit-transition: none;
+  -moz-transition: none;
+  /*-o-transition: none;*/
+  transition: none;
+  opacity: 0.5;
+  -webkit-transition: none;
+  -moz-transition: none;
+  /*-o-transition: none;*/
+  transition: none;
+}
+.button--large:disabled,
+.button--large[disabled] {
+  opacity: 0.3;
+  cursor: default;
+  /*pointer-events: none;*/
+}
+.button--large:hover {
+  -webkit-transition: none;
+  -moz-transition: none;
+  /*-o-transition: none;*/
+  transition: none;
+}
+.button--large:focus {
+  outline: 0;
+}
+
+
+body{
+    /*background-image: url("http://i.imgur.com/21YEcO0.jpg");*/
+    background-repeat:no-repeat;
+   background-size:cover;
+  font-family: 'Syncopate', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: #F0EFED;
+  text-align: center;
+}
+p{
+    
+     font-family: 'Syncopate', sans-serif;
+     font-weight: 500;
+	line-height: 26.4px;
+  -webkit-font-smoothing: antialiased;
+
+  font-size: 12px;
+  line-height: 100%;
+  color: #F0EFED;
+  text-align: center;
+}
+h4{
+    
+     font-family: 'Syncopate', sans-serif;
+     font-weight: 500;
+	line-height: 26.4px;
+  -webkit-font-smoothing: antialiased;
+
+  font-size: 18px;
+  color: #F0EFED;
+  text-align: center;
+}
+      </style>
+  
+  
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    </head>
+    <body>
+      <script>
+        var body = document.getElementsByTagName('body')[0];
+var allParties = [];
+
+function openCity(evt, cityName) {
+    if (cityName === "Create"){
+        body.style.backgroundImage = 'url(http://i.imgur.com/hEfRszn.jpg)';
+    }
+    else if (cityName === "Join"){
+        body.style.backgroundImage = 'url(http://i.imgur.com/21YEcO0.jpg)';
+    }
+    else if (cityName === "Party"){
+        body.style.backgroundImage = 'url(http://i.imgur.com/2NoN6t4.jpg)';
+    }
+    else if (cityName === "Drive"){
+        body.style.backgroundImage = 'url(http://i.imgur.com/WN8DPu6.jpg)';
+    }
+    else if (cityName === "About"){
+        body.style.backgroundImage = 'url(http://i.imgur.com/cZp3nmH.jpg)';
+    }
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+
+$( function() {
+    var dialog, form,
+      pCode1 = $( "#pCode1" ),
+      name1 = $( "#name1" ),
+      number1 = $( "#number1" ),
+      eName = $( "#eName" ),
+      eNumber = $( "#eNumber" ),
+      allFields = $( [] ). add( pCode1 ).add( name1 ).add( number1 ). add( eName ). add( eNumber ),
+      tips = $( ".validateTips" );
+ 
+    function updateTips( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function addUser() {
+      var valid = true;
+      allFields.removeClass( "ui-state-error" );
+      
+      valid = valid && checkLength( pCode1, "party code", 7, 7 );
+      valid = valid && checkLength( name1, "username", 3, 20 );
+      valid = valid && checkLength( number1, "number", 10, 11 );
+      valid = valid && checkLength( eName, "emergency name", 3, 20 );
+      valid = valid && checkLength( eNumber, "emergency number", 10, 11 );
+      
+      valid = valid && checkRegexp( pCode1, /^([0-9a-zA-Z])+$/, "This field only allow numbers and letters" );
+      valid = valid && checkRegexp( name1, /^([a-zA-Z])+$/i, "Name must consist of letters." );
+      valid = valid && checkRegexp( number1, /^([0-9])+$/, "Number field only allow numbers" );
+      valid = valid && checkRegexp( eName, /^([a-zA-Z])+$/i, "The name must consist of letters." );
+      valid = valid && checkRegexp( eNumber, /^([0-9])+$/, "Number field only allow: 0-9" );
+ 
+      if ( valid ) {
+        JoinPartier(pCode1.val(), name1.val(), number1.val(), eName.val(), eNumber.val());
+        dialog.dialog( "close" );
+      }
+      return valid;
+    }
+    
+    dialog = $( "#dialog-form1" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Join": addUser,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      addUser();
+    });
+ 
+    $( "#create-user-party" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  } );
+
+$( function() {
+    var dialog, form,
+      pCode2 = $( "#pCode2" ),
+      name2 = $( "#name2" ),
+      number2 = $( "#number2" ),
+      numPeople = $( "#numPeople" ),
+      allFields = $( [] ). add( pCode2 ).add( name2 ).add( number2 ). add(numPeople),
+      tips = $( ".validateTips" );
+ 
+    function updateTips2( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength2( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips2( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp2( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips2( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    
+    function addUser2() {
+      var valid = true;
+      allFields.removeClass( "ui-state-error" );
+      
+      valid = valid && checkLength2( pCode2, "party code", 7, 7 );
+      valid = valid && checkLength2( name2, "username", 3, 20 );
+      valid = valid && checkLength2( number2, "number", 10, 11 );
+      valid = valid && checkLength2( numPeople, "number of people", 1, 2);
+      
+      valid = valid && checkRegexp2( pCode2, /^([0-9a-zA-Z])+$/, "This field only allow numbers and letters" );
+      valid = valid && checkRegexp2( name2, /^([a-zA-Z])+$/i, "Name must consist of letters." );
+      valid = valid && checkRegexp2( number2, /^([0-9])+$/, "Number field only allow numbers" );
+      valid = valid && checkRegexp2( numPeople, /^([0-9])+$/, "Number field only allow: 0-9" );
+ 
+      if ( valid ) {
+        JoinDriver(pCode2.val(), name2.val(), number2.val(), numPeople.val());
+        dialog.dialog( "close" );
+      }
+      return valid;
+    }
+    
+    dialog = $( "#dialog-form2" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Join": addUser2,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit2", function( event ) {
+      event.preventDefault();
+      addUser2();
+    });
+ 
+    $( "#create-user-drive" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  } );
+  
+  $( function() {
+    var dialog, form,
+      pCode3 = $( "#pCode3" ),
+      allFields = $( [] ). add( pCode3 ),
+      tips = $( ".validateTips" );
+
+    function updateTips3( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength3( o, n, theLength ) {
+      if ( o.val().length !== theLength ) {
+        o.addClass( "ui-state-error" );
+        updateTips3( "Length of " + n + " must be " + theLength + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp3( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips3( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    
+    function getACode1() {
+      var valid = true;
+      allFields.removeClass( "ui-state-error" );
+      
+      valid = valid && checkLength3( pCode3, "party code", 7 );
+      
+      valid = valid && checkRegexp3( pCode3, /^([0-9a-zA-Z])+$/, "This field only allow numbers and letters" );
+ 
+      if ( valid ) {
+        PartyGuests(pCode3.val());
+        dialog.dialog( "close" );
+      }
+      return valid;
+    }
+    
+    dialog = $( "#dialog-form3" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Submit": getACode1,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit3", function( event ) {
+      event.preventDefault();
+      getACode1();
+    });
+ 
+    $( "#get-a-code-party-guests1" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  } );
+
+  $( function() {
+    var dialog, form,
+      pCode4 = $( "#pCode4" ),
+      allFields = $( [] ). add( pCode4 ),
+      tips = $( ".validateTips" );
+
+    function updateTips4( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength4( o, n, theLength ) {
+      if ( o.val().length !== theLength ) {
+        o.addClass( "ui-state-error" );
+        updateTips4( "Length of " + n + " must be " + theLength + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp4( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips4( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    
+    function getACode2() {
+      var valid = true;
+      allFields.removeClass( "ui-state-error" );
+      
+      valid = valid && checkLength4( pCode4, "party code", 7 );
+      
+      valid = valid && checkRegexp4( pCode4, /^([0-9a-zA-Z])+$/, "This field only allow numbers and letters" );
+ 
+      if ( valid ) {
+        PartyGuests(pCode4.val());
+        dialog.dialog( "close" );
+      }
+      return valid;
+    }
+    
+    dialog = $( "#dialog-form4" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Submit": getACode2,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit4", function( event ) {
+      event.preventDefault();
+      getACode2();
+    });
+ 
+    $( "#get-a-code-party-guests2" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  } );
+
+$( function() {
+    var dialog, form,
+      pCode5 = $( "#pCode5" ),
+      name5 = $( "#name5" ),
+      allFields = $( [] ). add( pCode5 ). add( name5 ),
+      tips = $( ".validateTips" );
+
+    function updateTips5( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength5( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips5( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp5( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips5( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    
+    function getInput1() {
+      var valid = true;
+      allFields.removeClass( "ui-state-error" );
+      
+      valid = valid && checkLength5( pCode5, "party code", 7, 7 );
+      valid = valid && checkLength5( name5, "your name", 3, 20 );
+      
+      valid = valid && checkRegexp5( pCode5, /^([0-9a-zA-Z])+$/, "This field only allow numbers and letters" );
+      valid = valid && checkRegexp5( name5, /^([a-zA-Z])+$/, "The name can only contain letters" );
+ 
+      if ( valid ) {
+        GoHome(pCode5.val(), name5.val());
+        dialog.dialog( "close" );
+      }
+      return valid;
+    }
+    
+    dialog = $( "#dialog-form5" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Submit": getInput1,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit5", function( event ) {
+      event.preventDefault();
+      getInput1();
+    });
+ 
+    $( "#go-home" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  } );
+
+$( function() {
+    var dialog, form,
+      pCode6 = $( "#pCode6" ),
+      allFields = $( [] ). add( pCode6 ),
+      tips = $( ".validateTips" );
+
+    function updateTips6( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength6( o, n, theLength ) {
+      if ( o.val().length !== theLength ) {
+        o.addClass( "ui-state-error" );
+        updateTips6( "Length of " + n + " must be " + theLength + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp6( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips6( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    
+    function getACode3() {
+      var valid = true;
+      allFields.removeClass( "ui-state-error" );
+      
+      valid = valid && checkLength6( pCode6, "party code", 7 );
+      
+      valid = valid && checkRegexp6( pCode6, /^([0-9a-zA-Z])+$/, "This field only allow numbers and letters" );
+ 
+      if ( valid ) {
+        ListRides(pCode6.val());
+        dialog.dialog( "close" );
+      }
+      return valid;
+    }
+    
+    dialog = $( "#dialog-form6" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Submit": getACode3,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit6", function( event ) {
+      event.preventDefault();
+      getACode3();
+    });
+ 
+    $( "#get-riders" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  } );
+
+$( function() {
+    var dialog, form,
+      pCode7 = $( "#pCode7" ),
+      name7 = $( "#name7" ),
+      allFields = $( [] ). add( pCode7 ). add( name7 ),
+      tips = $( ".validateTips" );
+
+    function updateTips7( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength7( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips7( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp7( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips7( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    
+    function getInput2() {
+      var valid = true;
+      allFields.removeClass( "ui-state-error" );
+      
+      valid = valid && checkLength7( pCode7, "party code", 7, 7 );
+      valid = valid && checkLength7( name7, "your name", 3, 20 );
+      
+      valid = valid && checkRegexp7( pCode7, /^([0-9a-zA-Z])+$/, "This field only allow numbers and letters" );
+      valid = valid && checkRegexp7( name7, /^([a-zA-Z])+$/, "The name can only contain letters" );
+ 
+      if ( valid ) {
+        DriveHome(pCode7.val(), name7.val());
+        dialog.dialog( "close" );
+      }
+      return valid;
+    }
+    
+    dialog = $( "#dialog-form7" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Submit": getInput2,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit7", function( event ) {
+      event.preventDefault();
+      getInput2();
+    });
+ 
+    $( "#drive-home" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  } );
+$( function() {
+    var dialog, form,
+      pCode8 = $( "#pCode8" ),
+      name8 = $( "#name8" ),
+      allFields = $( [] ). add( pCode8 ). add( name8 ),
+      tips = $( ".validateTips" );
+
+    function updateTips8( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength8( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips8( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp8( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips8( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    
+    function getInput3() {
+      var valid = true;
+      allFields.removeClass( "ui-state-error" );
+      
+      valid = valid && checkLength8( pCode8, "party code", 7, 7 );
+      valid = valid && checkLength8( name8, "your name", 3, 20 );
+      
+      valid = valid && checkRegexp8( pCode8, /^([0-9a-zA-Z])+$/, "This field only allow numbers and letters" );
+      valid = valid && checkRegexp8( name8, /^([a-zA-Z])+$/, "The name can only contain letters" );
+ 
+      if ( valid ) {
+        callE(pCode8.val(), name8.val());
+        dialog.dialog( "close" );
+      }
+      return valid;
+    }
+    
+    dialog = $( "#dialog-form8" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Submit": getInput3,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit8", function( event ) {
+      event.preventDefault();
+      getInput3();
+    });
+ 
+    $( "#call-emergency" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  } );
+
+class driver{
+    constructor (name, number, people){
+        this.name = name;
+        this.number = number;
+        this.people = people;
+    }
+    getName(){
+        return this.name;
+    }
+    getNum(){
+        return this.number;
+    }
+    getPassangers(){
+        return this.people;
+    }
+}
+
+class partyGoer{
+    constructor (name, number, eName, eNumber){
+        this.name = name;
+        this.number = number;
+        this.eName = eName;
+        this.eNumber = eNumber;
+    }
+    getName(){
+        return this.name;
+    }
+    getNum(){
+        return this.number;
+    }
+    getENum(){
+        return this.eNumber;
+    }
+}
+
+class party {
+    constructor (){
+        var code = "";
+        while (code.length < 7){
+            var rand = Math.ceil(Math.random()*122);
+            if ((rand >= 48 && rand <= 57) || (rand >= 65 && rand <= 90) || (rand >= 97 && rand <= 122)){
+                code += String.fromCharCode(rand);
+            }
+        }
+        this.partyCode = code;
+        this.partyers = [];
+        this.drivers = [];
+        this.leavingParty = [];
+    }
+    getCode(){
+        return this.partyCode;
+    }
+    addPartier(name, number, eName, eNumber){
+        this.partyers.push(new partyGoer(name, number, eName, eNumber));
+    }
+    addDriver(name, number, numPeeps){
+        this.drivers.push(new driver(name, number, numPeeps));
+    }
+    getPartiers(){
+        return this.partyers;
+    }
+    getDrivers(){
+        return this.drivers;
+    }
+    getLeavingP(){
+        return this.leavingParty;
+    }
+    getLeavingD(){
+        return this.leavingDrive;
+    }
+    sendPartierHome(indexOfPartier){
+        var holder = this.partyers[indexOfPartier];
+        this.partyers.splice(indexOfPartier, 1);
+        this.leavingParty.push(holder);
+    }
+    sendDriverHome(indexOfDriver){
+        var ind = indexOfDriver;
+        var numPass = this.drivers[ind].getPassangers();
+        var txt = "";
+        for (var i = 0; i < numPass; i++){
+            txt += this.leavingParty[i].getName() + ": " + this.leavingParty[i].getNum() + " ";
+        }
+        this.leavingParty.splice(0, numPass);
+        this.drivers.splice(ind, 1);
+        return txt;
+    }
+}
+
+function CreateCode() {
+    var newParty = new party ();
+    allParties.push (newParty);
+    alert("Your party code is: " + allParties[allParties.indexOf(newParty)].getCode());
+}
+
+function JoinPartier(pCode, name, number, eName, eNumber){
+    var partyCode = pCode;
+    var isValidCode1 = false;
+    for (var i = 0; i < allParties.length; i++){
+        if (allParties[i].getCode() === partyCode){
+            isValidCode1 = true;
+            var partyIndex = i;
+            break;
+        }
+    }
+    if (isValidCode1){
+        allParties[partyIndex].addPartier(name, number, eName, eNumber);
+        alert("Added!");
+    }
+    else{
+        alert("That is not a valid party code.");
+    }
+}
+function JoinDriver(pCode, name, number, numPass){
+    var partyCode = pCode;
+    var isValidCode2 = false;
+    for (var i = 0; i < allParties.length; i++){
+        if (allParties[i].getCode() === partyCode){
+            isValidCode2 = true;
+            var partyIndex = i;
+            break;
+        }
+    }
+    if (isValidCode2){
+        allParties[partyIndex].addDriver(name, number, numPass);
+        alert("Added!");
+    }
+    else{
+        alert("That is not a valid party code." + partyCode);
+    }
+}
+function GoHome(pCode, name){
+    var partyCode = pCode;
+    var isValidCode4 = false;
+    for (var i = 0; i < allParties.length; i++){
+        if (allParties[i].getCode() === partyCode){
+            isValidCode4 = true;
+            var partyIndex = i;
+            break;
+        }
+    }
+    if (isValidCode4){
+        var partier = name;
+        var partiers = allParties[partyIndex].getPartiers();
+        var isValidName = false;
+        for (var i = 0; i < partiers.length; i++){
+            if (partiers[i].getName() === partier){
+                isValidName = true;
+                var personIndex = i;
+                break;
+            }
+        }
+        if(isValidName){
+            allParties[partyIndex].sendPartierHome(personIndex);
+            alert("You’ve been added to the que! Your driver wll text you when they are ready!");
+        }
+        else{
+            alert("Your name is not registered here in this party.");
+        }
+    }
+    else{
+        alert("That is the incorrect code.");
+    }
+}
+function PartyGuests(pCode){
+    var partyCode = pCode;
+    var isValidCode3 = false;
+    for (var i = 0; i < allParties.length; i++){
+        if (allParties[i].getCode() === partyCode){
+            isValidCode3 = true;
+            var partyIndex = i;
+            break;
+        }
+    }
+    if (isValidCode3){
+        var guests = allParties[partyIndex].getPartiers();
+        var aList = [];
+        for (var j = 0; j < guests.length; j++) {
+            aList.push(" " + guests[j].getName());
+        }
+        txt = "Here are the party guests:  "+(aList);
+        
+        var drivers = allParties[partyIndex].getDrivers();
+        aList = [];
+        for (var j = 0; j < drivers.length; j++) {
+            aList.push(" " + drivers[j].getName());
+        }
+        txt += "\nHere are the drivers:  "+(aList);
+        
+        alert(txt);
+    }
+    else{
+        alert("That is the incorrect code.");
+    }
+}
+function ListRides(pCode){
+    var partyCode = pCode;
+    var isValidCode6 = false;
+    for (var i = 0; i < allParties.length; i++){
+        if (allParties[i].getCode() === partyCode){
+            isValidCode6 = true;
+            var partyIndex = i;
+            break;
+        }
+    }
+    if (isValidCode6){
+        var leaving = allParties[partyIndex].getLeavingP();
+        var aList = [];
+        for (var j = 0; j < leaving.length; j++) {
+            aList.push(" " + leaving[j].getName());
+        }
+        alert("Here are the party guests leaving:  "+(aList));
+    }
+    else{
+        alert("That is the incorrect code.");
+    }
+}
+function DriveHome(pCode, name){
+    var partyCode = pCode;
+    var isValidCode7 = false;
+    for (var i = 0; i < allParties.length; i++){
+        if (allParties[i].getCode() === partyCode){
+            isValidCode7 = true;
+            var partyIndex = i;
+            break;
+        }
+    }
+    if (isValidCode7){
+        var driverHome = name;
+        var drivers = allParties[partyIndex].getDrivers();
+        var isValidName = false;
+        for (var i = 0; i < drivers.length; i++){
+            if (drivers[i].getName() === driverHome){
+                isValidName = true;
+                var personIndex = i;
+                break;
+            }
+        }
+        if(isValidName){
+            if (allParties[partyIndex].getLeavingP().length < drivers[personIndex].getPassangers()){
+                alert("There are not enough people leaving right now, please wait so that you can keep more people safe.");
+            }
+            else{
+                var words = allParties[partyIndex].sendDriverHome(personIndex);
+                alert("Here are the people you will take home, please text them where to meet you and drive safe! " + words);
+            }
+        }
+        else{
+            alert("Your name is not registered here in this party.");
+        }
+    }
+    else{
+        alert("That is the incorrect code.");
+    }
+}
+
+function callE(pCode, name){
+    var partyCode = pCode;
+    var isValidCode8 = false;
+    for (var i = 0; i < allParties.length; i++){
+        if (allParties[i].getCode() === partyCode){
+            isValidCode8 = true;
+            var partyIndex = i;
+            break;
+        }
+    }
+    if (isValidCode8){
+        var partier = name;
+        var partiers = allParties[partyIndex].getPartiers();
+        var isValidName = false;
+        for (var i = 0; i < partiers.length; i++){
+            if (partiers[i].getName() === partier){
+                isValidName = true;
+                var personIndex = i;
+                break;
+            }
+        }
+        if(isValidName){
+            alert("This is your emergency number: " + partiers[personIndex].getNum());
+        }
+        else{
+            alert("Your name is not registered here in this party.");
+        }
+    }
+    else{
+        alert("That is the incorrect code.");
+    }
+    
+}
+
+      </script>
+    </body>
+    <div class="tab tab-bar tab-bar--top tab-bar--material">
+    
+  <label class="tab-bar__item tab-bar--material__item">
+    <!--<input type="radio" name="tab-bar-material-a" checked="checked">-->
+    <button class="tablinks tab-bar__button tab-bar--material__button"onclick="openCity(event, 'Create')">
+      Create
+    </button>
+  </label>
+  
+  
+  <div id="dialog-form1" title="Join Party- Party Animal">
+  <p class="validateTips">All form fields are required.</p>
+ 
+  <form>
+    <fieldset>
+      <label for="pCode1">Party Code</label>
+        <input type="text" name="pCode1" id="pCode1" class="text ui-widget-content ui-corner-all">
+      <label for="name1">Name</label>
+      <input type="text" name="name1" id="name1" class="text ui-widget-content ui-corner-all">
+         <label for="number1">Phone Number</label>
+      <input type="number" name="number1" id="number1" class="text ui-widget-content ui-corner-all">
+      <label for="eName">Emergency Contact Name</label>
+      <input type="text" name="eName" id="eName" class="text ui-widget-content ui-corner-all">
+         <label for="eNumber">Emergency Contact Phone Number</label>
+      <input type="number" name="eNumber" id="eNumber" class="text ui-widget-content ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+
+<div id="dialog-form2" title="Join Party- DD VIP">
+  <p class="validateTips">All form fields are required.</p>
+ 
+  <form>
+    <fieldset>
+      <label for="pCode2">Party Code</label>
+        <input type="text" name="pCode2" id="pCode2" class="text ui-widget-content ui-corner-all">
+      <label for="name2">Name</label>
+      <input type="text" name="name2" id="name2" class="text ui-widget-content ui-corner-all">
+         <label for="number2">Phone Number</label>
+      <input type="number" name="number2" id="number2" class="text ui-widget-content ui-corner-all">
+      <label for="numPeople">Number of Passengers</label>
+      <input type="number" name="numPeople" id="numPeople" class="text ui-widget-content ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit2" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+<div id="dialog-form3" title="See Party Guests">
+  <p class="validateTips">The code is 7 digits</p>
+ 
+  <form>
+    <fieldset>
+      <label for="pCode3">Party Code</label>
+        <input type="text" name="pCode3" id="pCode3" class="text ui-widget-content ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit3" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+<div id="dialog-form4" title="See Party Guests">
+  <p class="validateTips">The code is 7 digits</p>
+ 
+  <form>
+    <fieldset>
+      <label for="pCode4">Party Code</label>
+        <input type="text" name="pCode4" id="pCode4" class="text ui-widget-content ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit4" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+<div id="dialog-form5" title="Go Home">
+  <p class="validateTips">All form fields are required.</p>
+ 
+  <form>
+    <fieldset>
+      <label for="pCode5">Party Code</label>
+        <input type="text" name="pCode5" id="pCode5" class="text ui-widget-content ui-corner-all">
+      <label for="name5">Your Name</label>
+      <input type="text" name="name5" id="name5" class="text ui-widget-content ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit5" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+<div id="dialog-form6" title="See Party Guests Leaving">
+  <p class="validateTips">The code is 7 digits</p>
+ 
+  <form>
+    <fieldset>
+      <label for="pCode6">Party Code</label>
+        <input type="text" name="pCode6" id="pCode6" class="text ui-widget-content ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit6" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+<div id="dialog-form7" title="Drive Home">
+  <p class="validateTips">All form fields are required.</p>
+ 
+  <form>
+    <fieldset>
+      <label for="pCode7">Party Code</label>
+        <input type="text" name="pCode7" id="pCode7" class="text ui-widget-content ui-corner-all">
+      <label for="name7">Your Name</label>
+      <input type="text" name="name7" id="name7" class="text ui-widget-content ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit7" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+<div id="dialog-form8" title="Call Emergency">
+  <p class="validateTips">All form fields are required.</p>
+ 
+  <form>
+    <fieldset>
+      <label for="pCode8">Party Code</label>
+        <input type="text" name="pCode8" id="pCode8" class="text ui-widget-content ui-corner-all">
+      <label for="name8">Your Name</label>
+      <input type="text" name="name8" id="name8" class="text ui-widget-content ui-corner-all">
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit8" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+  <label class="tab-bar__item tab-bar--material__item">
+    <!--<input type="radio" name="tab-bar-material-a">-->
+    <button class="tablinks tab-bar__button tab-bar--material__button" onclick="openCity(event, 'Join')" id="defaultOpen">
+      Join
+    </button>
+  </label>
+  <label class="tab-bar__item tab-bar--material__item">
+    <!--<input type="radio" name="tab-bar-material-a">-->
+    <button class="tablinks tab-bar__button tab-bar--material__button"onclick="openCity(event, 'Party')">
+      Party
+    </button>
+  </label>
+  <label class="tab-bar__item tab-bar--material__item">
+    <!--<input type="radio" name="tab-bar-material-a">-->
+    <button class="tablinks tab-bar__button tab-bar--material__button"onclick="openCity(event, 'Drive')">
+      Drive
+    </button>
+  </label>
+  <label class="tab-bar__item tab-bar--material__item">
+    <!--<input type="radio" name="tab-bar-material-a">-->
+    <button class="tablinks tab-bar__button tab-bar--material__button"onclick="openCity(event, 'About')">
+      About Us
+    </button>
+  </label>
+</div>
+<br>
+
+<div id="Create" class="tabcontent">
+  <h3>Create a Party</h3>
+  <h4>Generate a party code and share it with your friends to connect. </h4>
+  <br>
+  <button onclick="CreateCode()" class="button button--large"><strong>Create a Party Code</strong></button>
+</div>
+<div id="Join" class="tabcontent">
+  <h3>Join a Party</h3>
+  <h4>Enter the code created by your host to connect to your party. </h4>
+  <br>
+   <button class="button button--large" id="create-user-party"><strong>party animal</strong></button><br>
+   <button class="button button--large" id="create-user-drive"><strong>Double D VIP (driver)</strong></button>
+
+<script>
+function myFunction() {
+    var mylist = document.getElementById("myList");
+    document.getElementById("demo").value = mylist.options[mylist.selectedIndex].text;
+}
+</script>
+</div>
+<div id="Party" class="tabcontent">
+  <h3>Party</h3>
+  <br><br>
+  <button id="go-home" class="button button--large"><strong>I want to go home</strong></button> <br>
+  <button id="get-a-code-party-guests1" class="button button--large"><strong>see party guests</strong></button><br>
+  <button id = "call-emergency" class="button button--large"><strong> Call Contact</strong></button>
+</div> 
+<div id="Drive" class="tabcontent">
+  <h3>Drive</h3>
+  <br><br>
+  <button id="get-a-code-party-guests2" class="button button--large"><strong>see party guests</strong></button> <br>
+  <button id="get-riders" class="button button--large"><strong>see who wants a ride</strong></button> <br>
+  <button id="drive-home" class="button button--large"><strong>drive home</strong></button>
+</div>
+<div id="About" class="tabcontent">
+  <h3>About Us</h3>
+  <h5>10% of teens who drive have done so with alcohol in their system.</h5>
+  <p> We are 4 high school students from New York City and New Jersey who felt passionate about putting an end to drunk driving. SteerClear is our attempt to alleviate the problems surrounding parties- specifically, how to get home when one is legally impaired. Through the Girls Who Code Summer Immersion Program at Goldman Sachs, we came together and learned how to code and developed this app. </p>
+ 
+ <a href="https://twitter.com/steerclearteam">  <img src="http://i.imgur.com/SAZa3jM.png" style="width:150px;height:150px;">
+ 
+</a>
+
+<a href="mailto:steerclearNYC@gmail.com" target="_top">
+  <img src="http://i.imgur.com/UZugDGN.png" style="width:200px;height:110px;"></a>
+</div>
+
 </html>
+
